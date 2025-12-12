@@ -1,0 +1,53 @@
+# Node modules (server)
+stock_broker_backend/node_modules/
+
+# Build output (server)
+stock_broker_backend/dist/
+stock_broker_backend/build/
+
+# Logs (global)
+*.log
+logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Environment configuration (never commit real values)
+.env
+.env.*
+!.env.example
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cache folders
+.cache/
+.eslintcache
+.stylelintcache
+tmp/
+temp/
+
+# Docker files (optional)
+docker-data/
+docker-compose.override.yml
+
+# Certificate files (optional)
+*.pem
+*.crt
+*.key
+
+# TypeScript cache (if using TS later)
+*.tsbuildinfo
+
+# Coverage
+coverage/
