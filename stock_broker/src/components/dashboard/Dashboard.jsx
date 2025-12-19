@@ -9,8 +9,13 @@ const SUPPORTED_STOCKS = ['GOOG', 'TSLA', 'AMZN', 'META', 'NVDA'];
 function Dashboard() {
     const [email, setEmail] = useState("");
     const [prices, setPrices] = useState({});
-    const [subscriptions, setSubscriptions] = useState([]);
+    const [subscriptions, setSubscriptions] = useState(() => {
+        const saved = localStorage.getItem("subscriptions");
+        return saved ? JSON.parse(saved) : [];
+    });
     const navigate = useNavigate();
+    //console.log(localStorage.getItem("subscriptions"));
+    //console.log(JSON.parse(localStorage.getItem("subscriptions")));
 
     useEffect(() => {
         const storedEmail = localStorage.getItem("email");
@@ -19,6 +24,10 @@ function Dashboard() {
             return;
         }
         setEmail(storedEmail);
+
+        subscriptions.forEach(stock => {
+            socket.emit("subscribe", stock);
+        });
 
         socket.on("priceUpdate", (data) => {
             setPrices(prev => ({ ...prev, [data.stock]: data.price }));
@@ -31,9 +40,10 @@ function Dashboard() {
     }, [navigate]);
 
     const toggleSubscription = (stock) => {
+        let updatedSubs;
         if (subscriptions.includes(stock)) {
             socket.emit("unsubscribe", stock);
-            setSubscriptions(prev => prev.filter(s => s !== stock));
+            updatedSubs = subscriptions.filter(s => s !== stock);
             setPrices(prev => {
                 const newPrices = { ...prev };
                 delete newPrices[stock];
@@ -41,12 +51,16 @@ function Dashboard() {
             });
         } else {
             socket.emit("subscribe", stock);
-            setSubscriptions(prev => [...prev, stock]);
+            updatedSubs = [...subscriptions, stock];
         }
+
+        setSubscriptions(updatedSubs);
+        localStorage.setItem("subscriptions", JSON.stringify(updatedSubs));
     };
 
     const handleLogout = () => {
         localStorage.removeItem("email");
+        localStorage.removeItem("subscriptions");
         navigate("/");
     };
 
