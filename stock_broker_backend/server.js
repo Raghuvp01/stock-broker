@@ -6,7 +6,7 @@ const { Server } = require('socket.io');
 const { startStockUpdates, supportedStocks } = require('./stock');
 
 const app = express();
-app.use(cors);
+app.use(cors());
 dotenv.config();
 
 const server = http.createServer(app);
